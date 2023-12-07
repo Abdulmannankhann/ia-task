@@ -128,7 +128,7 @@ const Assignment2 = () => {
 		},
 		{
 			name:"Action",
-			cell: (row) => <Button variant="outline-danger" size='sm' onClick={()=>{handleAction(row)}}>Act On Spectrum</Button>
+			cell: (row) => <Button variant="outline-danger" size='sm' onClick={()=>{handleAction(row)}}>Action</Button>
 		}
 	  ]
 
@@ -158,7 +158,7 @@ const Assignment2 = () => {
 				units="km"
 				/> 
 			</Col>
-			<Col lg={4} md={12} sm={12} xs={12} className='p-0'>
+			<Col lg={4} md={12} sm={12} xs={12} className='p-0 mt-5 mt-lg-0'>
 				<CommonLineChart 
 				name="Temperature" 
 				data={spectrumLiveData?.temperature} 
@@ -169,7 +169,7 @@ const Assignment2 = () => {
 				units="°C"
 				/> 
 			</Col>
-			<Col lg={4} md={12} sm={12} xs={12} className='p-0'>
+			<Col lg={4} md={12} sm={12} xs={12} className='p-0 mt-5 mt-lg-0'>
 				<CommonLineChart 
 				name="Velocity"  
 				data={spectrumLiveData?.velocity} 

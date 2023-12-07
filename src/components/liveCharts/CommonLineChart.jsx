@@ -65,7 +65,7 @@ const CommonLineChart = ({ name="", data = [], currentData = null, currentIndex 
               interval={0}
               domain={calculateYAxisDomain()}
               ticks={calculateYAxisTicks()}
-              label={{ value: `Altitude (${units})`, angle: -90, position: 'insideLeft', offset: -10 }}
+              label={{ value: `${name} (${units})`, angle: -90, position: 'insideLeft', offset: -10, style: { fontWeight: 'bold' } }}
             />
             <Tooltip
               content={({ payload }) => {
@@ -84,15 +84,19 @@ const CommonLineChart = ({ name="", data = [], currentData = null, currentIndex 
                 return null;
               }}
             />
-            <Legend />
+            {/*<Legend />*/}
             <Line type="monotone" dataKey="value" stroke="#8884d8" />
           </LineChart>
+		  {currentData && <div style={{ display: 'flex', justifyContent:'center',alignItems:"center"}}>
+			<div style={{ width: '10px', height: '10px', backgroundColor: '#8884d8', marginRight: '5px' }} />
+			<span>Current {name}: <strong>&nbsp;{currentData.toFixed(2)} {units}</strong></span>
+		  </div>}
         </ResponsiveContainer>
-        {currentData && (
+        {/*{currentData && (
           <div className='d-flex justify-content-center'>
             Current {name}: <strong>&nbsp;{currentData.toFixed(2)} {units}</strong>
           </div>
-        )}
+        )}*/}
       </div>
     </div>
   );
