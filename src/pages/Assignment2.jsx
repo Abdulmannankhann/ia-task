@@ -7,10 +7,13 @@ import Card from 'react-bootstrap/Card';
 import { Container } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
 const Assignment2 = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isActionRequired, setIsActionRequired] = useState([]);
+	const [filteredIsActionRequired, setFilteredIsActionRequired] = useState([]);
 	const [spectrumLiveData, setSpectrumLiveData] = useState({
 		altitude:[],
 		temperature:[],
@@ -32,10 +35,12 @@ const Assignment2 = () => {
 	
 		socket.onmessage = (event) => {
 		  const receivedData = JSON.parse(event.data);
+		  const id = uuidv4();
+		  const timestamp = new Date().toISOString();
 		  const format = ( key, value ) => ({
 			index: currentIndex + 1,
 			[key]: value,
-			timestamp: new Date().toISOString(),
+			timestamp:timestamp,
 		  })
 	
 		  setSpectrumLiveData((prevData) => {
@@ -47,10 +52,11 @@ const Assignment2 = () => {
 				isActionRequired:[...prevData?.isActionRequired, format("isActionRequired", receivedData?.IsActionRequired)],
 				isAscending:[...prevData?.isAscending, format("isAscending", receivedData?.IsAscending)],
 				currentData:receivedData,
-				systemDetails:[...prevData.systemDetails, receivedData]
+				systemDetails:[...prevData.systemDetails, {...receivedData,id:id,timestamp:timestamp}]
 			}
 		  });
 		  setCurrentIndex((prevIndex) => prevIndex + 1);
+		  setIsActionRequired((pre)=>([...pre,{...receivedData,id:id,timestamp:timestamp}]))
 		};
 	
 		socket.onclose = (event) => {
@@ -65,20 +71,33 @@ const Assignment2 = () => {
 	  }, []);
 
 	  const handleAction = (row) => {
-		console.log(row)
 		axios.get("https://webfrontendassignment-isaraerospace.azurewebsites.net/api/ActOnSpectrum")
 		.then((res)=>{
-			console.log(res)
+			const actionTaken = filteredIsActionRequired?.filter((v)=>(v?.id !== row?.id)).sort((a,b)=>{return new Date(a.timestamp) - new Date(b.timestamp)});
+			setIsActionRequired(actionTaken)
+		}).catch((err)=>{
+			//console.log(err)
 		})
 	  }
 
 	  const columns = [
 		{
+			name: 'Event Time',
+			selector: row => row.timestamp,
+			format: function (cell) {
+			return (
+				<div className='text-danger'> 
+					{moment(cell.timestamp).format('D MMM YY, HH:mm:ss')}
+				</div>
+			);
+		},
+		},
+		{
 			name: 'Is Ascending',
 			selector: row => row.IsAscending,
 			format: function (cell) {
 			return (
-				<div> 
+				<div className='text-danger'> 
 					{cell.IsAscending ?"True" : "False"}
 				</div>
 			);
@@ -87,13 +106,21 @@ const Assignment2 = () => {
 		{
 			name: 'Status Message',
 			selector: row => row.StatusMessage,
+			format: function (cell) {
+				return (
+					<div className='text-danger' data-toggle="tooltip" title={cell.StatusMessage}> 
+						{cell.StatusMessage}
+					</div>
+				);
+			},
+			wrap:true
 		},
 		{
 			name: 'Action Required',
 			selector: row => row.IsActionRequired,
 			format: function (cell) {
 				return (
-					<div> 
+					<div className='text-danger'> 
 						{cell.IsActionRequired ?"True" : "False"}
 					</div>
 				);
@@ -101,18 +128,20 @@ const Assignment2 = () => {
 		},
 		{
 			name:"Action",
-			cell: (row) => <Button variant="outline-dark" size='sm' onClick={()=>{handleAction(row)}}>Click to do Action</Button>
+			cell: (row) => <Button variant="outline-danger" size='sm' onClick={()=>{handleAction(row)}}>Act On Spectrum</Button>
 		}
 	  ]
 
 	//  console.log(spectrumLiveData?.currentData)
 
 	  useEffect(()=>{
-		const filterActionMsgs = spectrumLiveData?.systemDetails?.filter((data)=>{
+		const filterActionMsgs = isActionRequired?.filter((data)=>{
 			if(data?.IsActionRequired) return data
+		}).sort((a,b)=>{
+			return new Date(a.timestamp) - new Date(b.timestamp)
 		})
-		setIsActionRequired(filterActionMsgs)
-	  },[spectrumLiveData])
+		setFilteredIsActionRequired(filterActionMsgs)
+	  },[isActionRequired])
 
   return (
 	<div className='isar-container' >
@@ -170,7 +199,7 @@ const Assignment2 = () => {
 					</Card.Text>
 					<DataTable 
 					columns={columns} 
-					data={isActionRequired} 
+					data={filteredIsActionRequired} 
 					pagination 
 					paginationPerPage={3}
 					noDataComponent="There are no Actions required!"
