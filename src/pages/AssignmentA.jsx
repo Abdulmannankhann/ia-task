@@ -8,7 +8,7 @@ import { altitudeData, altitudeOptions } from '../components/charts/AltitudeChar
 import { temperatureData, temperatureOptions } from '../components/charts/TemperatureChartConfig';
 import { chartContainerStyle, chartStyle, valueStyle } from "../components/charts/CommonChartStyles"
 
-const Assignment1 = () => {
+const AssignmentA = () => {
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState({
 		velocity: 0,
@@ -74,4 +74,4 @@ const Assignment1 = () => {
   );
 };
 
-export default Assignment1;
+export default AssignmentA;

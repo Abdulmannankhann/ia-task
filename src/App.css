@@ -74,3 +74,9 @@ body, html {
 	}
   }
   
+  li:hover{
+	background: linear-gradient(to bottom, #650392, #760297, #87029b, #98029f, #a804a3);
+	font-weight: 500;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+  }

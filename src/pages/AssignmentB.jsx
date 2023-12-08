@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
 import SystemLogs from '../components/SystemLogs';
 
-const Assignment2 = () => {
+const AssignmentB = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isActionRequired, setIsActionRequired] = useState([]);
 	const [showSystemLogs, setShowSystemLogs] = useState(false);
@@ -225,4 +225,4 @@ const Assignment2 = () => {
   )
 }
 
-export default Assignment2
+export default AssignmentB
