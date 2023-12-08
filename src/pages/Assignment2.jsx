@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import CommonLineChart from '../components/liveCharts/CommonLineChart';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner, Card, Button, Col, Row } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
+import SystemLogs from '../components/SystemLogs';
 
 const Assignment2 = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isActionRequired, setIsActionRequired] = useState([]);
+	const [showSystemLogs, setShowSystemLogs] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [filteredIsActionRequired, setFilteredIsActionRequired] = useState([]);
 	const [spectrumLiveData, setSpectrumLiveData] = useState({
 		altitude:[],
@@ -31,6 +30,7 @@ const Assignment2 = () => {
 	
 		socket.onopen = () => {
 		  console.log('WebSocket connection opened');
+		  setLoading(false)
 		};
 	
 		socket.onmessage = (event) => {
@@ -143,6 +143,16 @@ const Assignment2 = () => {
 		setFilteredIsActionRequired(filterActionMsgs)
 	  },[isActionRequired])
 
+	  if(loading){
+		return (
+			<div className='loader-container d-flex justify-content-center'>
+			<Spinner animation="grow" variant="dark" />
+			<Spinner animation="grow" variant="dark" />
+			<Spinner animation="grow" variant="dark" />
+			</div>
+		)
+	  }
+
   return (
 	<div className='isar-container' >
 		<Container fluid>
@@ -187,7 +197,7 @@ const Assignment2 = () => {
 			<Card>
 			<Card.Header className="d-flex justify-content-between align-items-center">Spectrum Details
 			<div>
-				<Button variant="outline-dark" size='sm'>Check All System Logs</Button>
+				<Button variant="outline-dark" size='sm' onClick={()=>setShowSystemLogs(true)}>Check All System Logs</Button>
 			</div>
 			</Card.Header>
 				<Card.Body>
@@ -202,6 +212,7 @@ const Assignment2 = () => {
 					data={filteredIsActionRequired} 
 					pagination 
 					paginationPerPage={3}
+					paginationRowsPerPageOptions={[3, 10, 20, 40]}
 					noDataComponent="There are no Actions required!"
 					/>
 				</Card.Body>
@@ -209,6 +220,7 @@ const Assignment2 = () => {
 			</Col>
 		</Row>
 		</Container>
+		<SystemLogs show={showSystemLogs} setShow={setShowSystemLogs} data={spectrumLiveData?.systemDetails}/>
 	</div>
   )
 }
