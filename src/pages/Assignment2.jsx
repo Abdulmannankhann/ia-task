@@ -193,7 +193,7 @@ const Assignment2 = () => {
 		</Row>
 		<Row>
 
-			<Col lg={12} md={12} sm={12} xs={12} style={{ marginTop:"100px" }}>
+			<Col lg={12} md={12} sm={12} xs={12} style={{ marginTop:"100px",marginBottom:"10px" }}>
 			<Card>
 			<Card.Header className="d-flex justify-content-between align-items-center">Spectrum Details
 			<div>
