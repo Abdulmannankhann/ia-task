@@ -132,8 +132,6 @@ const AssignmentB = () => {
 		}
 	  ]
 
-	//  console.log(spectrumLiveData?.currentData)
-
 	  useEffect(()=>{
 		const filterActionMsgs = isActionRequired?.filter((data)=>{
 			if(data?.IsActionRequired) return data
