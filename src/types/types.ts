@@ -15,5 +15,14 @@ export type SpectrumDatas = {
   statusMessage: string;
   isAscending: boolean;
   isActionRequired: boolean;
-  timestamp: string;
+  time: string;
+};
+
+export type SpectrumStatusResponses = {
+  velocity: number;
+  altitude: number;
+  temperature: number;
+  statusMessage: string;
+  isAscending: boolean;
+  isActionRequired: boolean;
 };
