@@ -49,7 +49,7 @@ const CommonLineChart = ({ name = "", data = [], currentData = null, currentInde
   return (
     <div>
       <div style={{ width: "85%", height: "30vh", margin: "20px" }}>
-        <h6>Real-time Spectrum {name}</h6>
+        <h6 className="mt-lg-0 mt-md-0 mt-5">Real-time Spectrum {name}</h6>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data?.slice(Math.max(0, currentIndex - initialVisiblePoints), currentIndex + 1)} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />

@@ -93,6 +93,13 @@ const AssignmentC: FC = () => {
                       <ul>
                         <li>In concluding my observations, I believe these refinements will contribute to the overall effectiveness of our systems.</li>
                         <li>While these are the observations for now, I look forward to the opportunity of implementing these suggestions collaboratively in a team setting. Your positive response is anticipated, and I am eager to enhance the functionality and cohesion of our project together.</li>
+                        <li>
+                          Feel free to reach me out at{" "}
+                          <strong>
+                            <a href="mailto:mannan.khan63@gmail.com">mannan.khan63@gmail.com</a>
+                          </strong>{" "}
+                          with any further thoughts or questions.
+                        </li>
                         <li>Thank you. Danke.</li>
                       </ul>
                     </Accordion.Body>

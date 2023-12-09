@@ -55,9 +55,9 @@ const AssignmentB = () => {
 
     socket.onclose = (event) => {
       console.log("WebSocket connection closed:", event);
-      //  toast.info(`WebSocket connection closed`, {
-      //    position: toast.POSITION.TOP_CENTER,
-      //  });
+      toast.info(`WebSocket connection closed`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     };
 
     return () => {
@@ -129,7 +129,7 @@ const AssignmentB = () => {
           </Col>
         </Row>
         <Row className="mb-4">
-          <Col lg={12} md={12} sm={12} xs={12} style={{ marginTop: "100px", marginBottom: "10px" }}>
+          <Col lg={12} md={12} sm={12} xs={12} style={{ marginTop: "80px", marginBottom: "10px" }}>
             <Card>
               <Card.Header className="d-flex justify-content-between align-items-center">
                 Spectrum Details
