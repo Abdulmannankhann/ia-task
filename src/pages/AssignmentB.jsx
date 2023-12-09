@@ -55,9 +55,9 @@ const AssignmentB = () => {
 
     socket.onclose = (event) => {
       console.log("WebSocket connection closed:", event);
-      toast.info(`WebSocket connection closed`, {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      //  toast.info(`WebSocket connection closed`, {
+      //    position: toast.POSITION.TOP_CENTER,
+      //  });
     };
 
     return () => {
@@ -96,6 +96,7 @@ const AssignmentB = () => {
 
   useEffect(() => {
     const filterActionMsgs = isActionRequired
+      // eslint-disable-next-line array-callback-return
       ?.filter((data) => {
         if (data?.IsActionRequired) return data;
       })
@@ -106,7 +107,11 @@ const AssignmentB = () => {
   }, [isActionRequired]);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="loader-container">
+        <Loader />
+      </div>
+    );
   }
 
   return (
