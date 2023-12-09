@@ -5,7 +5,7 @@ const AssignmentC: FC = () => {
   return (
     <div className="isar-container">
       <Container>
-        <Row>
+        <Row className="mb-5">
           <Col className="mt-4">
             <Card>
               <Card.Body>
