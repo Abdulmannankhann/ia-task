@@ -80,3 +80,24 @@ body, html {
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
   }
+  
+  .display-card{
+	border-radius: 15px !important;
+	cursor: pointer;
+
+}
+.display-card:hover{
+	box-shadow: var(--bs-box-shadow-sm) !important;
+}
+
+.display-card-body{
+	background-color: rgb(238, 238, 238);
+	border-radius: inherit;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.display-card-title{
+	font-size: 1rem;
+}

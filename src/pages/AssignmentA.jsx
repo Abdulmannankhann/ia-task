@@ -1,30 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import 'chartjs-plugin-datalabels';
 import axios from 'axios';
-import { Bar, Radar } from 'react-chartjs-2';
-import { Button, Spinner } from 'react-bootstrap';
-import { velocityData, velocityOptions } from '../components/charts/VelocityChartConfig';
-import { altitudeData, altitudeOptions } from '../components/charts/AltitudeChartConfig';
-import { temperatureData, temperatureOptions } from '../components/charts/TemperatureChartConfig';
-import { chartContainerStyle, chartStyle, valueStyle } from "../components/charts/CommonChartStyles"
+import { Button, Row, Spinner, Col, Card, Container } from 'react-bootstrap';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
+import { LineChart } from '@mui/x-charts/LineChart';
+import moment from 'moment/moment';
+
+
 
 const AssignmentA = () => {
 	const [loading, setLoading] = useState(false);
-	const [data, setData] = useState({
-		velocity: 0,
-		altitude: 0,
-		temperature: 0,
-		statusMessage: '',
-		isAscending: false,
-		isActionRequired: false,
-	  });
+	const [data, setData] = useState([]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       axios.get("https://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumStatus")
 	  .then((res)=>{
-		setData(res?.data)
+		if (data.length < 5) {
+			console.log("if");
+			setData((prev) => [...prev, {...res?.data,time:new Date().toISOString()}]);
+		  } else if (data.length >= 5) {
+			console.log("else");
+			const newData = [...data];
+			newData.pop();
+			newData.unshift({...res?.data,time:new Date().toISOString()});
+			setData(newData);
+		  }
 		setLoading(false);
 	  })
 	  .catch((err)=>{
@@ -41,35 +46,41 @@ const AssignmentA = () => {
   useEffect(() => {
 	fetchData()
   }, [])
-  
-
+  console.log(data)
   return (
     <div className='isar-container'>
 		<div className='d-flex justify-content-center'>
-		<Button variant="outline-dark" onClick={fetchData} className='m-3' >
+		<Button variant="outline-dark" onClick={fetchData} className='m-3' disabled={loading}>
 		{!loading && <i className="bi bi-hand-index-thumb update-data-icon"></i>}
 		{loading && <Spinner animation='border' role='status' size='sm' className='update-data-icon'></Spinner>}
-        Update Satellite Data
+        Update Spectrum Data
       </Button>
 		</div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }}>
-        <div style={{ ...chartContainerStyle, ...chartStyle }}>
-          <h2>Velocity</h2>
-          <Bar data={velocityData(data)} options={velocityOptions}/>
-          <div style={{ ...valueStyle }}>{data.velocity.toFixed(2)} m/s</div>
-        </div>
-        <div style={{ ...chartContainerStyle, ...chartStyle }}>
-          <h2>Altitude</h2>
-		  <Radar data={altitudeData(data)} options={altitudeOptions}/>
-          <div style={{ ...valueStyle }}>{data.altitude.toFixed(2)} km</div>
-        </div>
-        <div style={{ ...chartContainerStyle, ...chartStyle, height:"200px" }}>
-          <h2>Temperature</h2>
-		  <Bar data={temperatureData(data)} options={temperatureOptions}/>
-          <div style={{ ...valueStyle, bottom: '-100px' }}>{data.temperature.toFixed(2)}°C</div>
-        </div>
-      </div>
+		<Container>
+			<Row>
+		<Col sm={6} lg={4}>
+		<Card >
+		<Card.Body>
+			<Card.Title className=''>Altitude: {data.length > 0 ? data[data.length - 1]?.altitude.toFixed(2) + " km": ""}</Card.Title>
+			<Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
+			<Box sx={{ flexGrow: 1 }}>
+			<LineChart colors={["black"]}
+			series={[
+				{ data: data?.map(item => item.altitude.toFixed(2)).reverse() },
+			]}
+			xAxis={[{ scaleType: 'point', data: data?.map(item => `${moment(item.time).format('DD-MMM-YY')}\n${moment(item.time).format('HH:mm:ss')}`) }]}
+			height={200} 
+			/>
+			</Box>
+			<div className="text-end m-2 mt-0 mb-0">
+					<strong style={{ fontSize: '25px' }}>•</strong> Recent 5 values
+				</div>
+		</Card.Body>
+		</Card>
+		</Col>
+		</Row>
+	  </Container>
     </div>
   );
 };
