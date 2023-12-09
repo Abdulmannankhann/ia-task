@@ -11,6 +11,7 @@ import { SPECTRUM_STATUS_ENDPOINT } from "api/apiConfig";
 const AssignmentA: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SpectrumDatas[]>([]);
+  const [sortedData, setSortedData] = useState<SpectrumDatas[]>([]);
 
   const fetchData = async () => {
     try {
@@ -18,12 +19,13 @@ const AssignmentA: React.FC = () => {
       axios
         .get<SpectrumStatusResponses>(SPECTRUM_STATUS_ENDPOINT)
         .then((res) => {
+          const addTime = { ...res?.data, time: new Date().toISOString() };
           if (data.length < 5) {
-            setData((prev) => [...prev, { ...res?.data, time: new Date().toISOString() }]);
+            setData((prev) => [...prev, addTime]);
           } else if (data.length >= 5) {
-            const newData = [...data];
+            const newData = [...sortedData];
             newData.pop();
-            newData.unshift({ ...res?.data, time: new Date().toISOString() });
+            newData.unshift(addTime);
             setData(newData);
           }
         })
@@ -46,6 +48,13 @@ const AssignmentA: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (data.length > 0) {
+      const sorted = data?.filter((item) => item && item.time)?.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+      setSortedData(sorted);
+    }
+  }, [data]);
+
   return (
     <div className="isar-container">
       <div className="d-flex justify-content-center">
@@ -60,18 +69,18 @@ const AssignmentA: React.FC = () => {
         <Container>
           <Row className="mb-2">
             <Col md={6} lg={4} className="mb-2">
-              <ChartCards colors={["#8884d8"]} data={data} chartType="altitude" />
+              <ChartCards colors={["#8884d8"]} data={sortedData} chartType="altitude" unit="km" />
             </Col>
             <Col md={6} lg={4} className="mb-2">
-              <ChartCards colors={["#8884d8"]} data={data} chartType="velocity" />
+              <ChartCards colors={["#8884d8"]} data={sortedData} chartType="velocity" unit="m/s" />
             </Col>
             <Col md={6} lg={4}>
-              <ChartCards colors={["#8884d8"]} data={data} chartType="temperature" />
+              <ChartCards colors={["#8884d8"]} data={sortedData} chartType="temperature" unit="°C" />
             </Col>
           </Row>
           <Row className="mb-4">
             <Col lg={12}>
-              <StatusCard data={data} />
+              <StatusCard data={sortedData} />
             </Col>
           </Row>
         </Container>
