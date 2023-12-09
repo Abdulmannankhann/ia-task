@@ -6,6 +6,7 @@ import { SpectrumDatas, SpectrumStatusResponses } from "types/types";
 import ChartCards from "components/cards/ChartCards";
 import StatusCard from "components/cards/StatusCard";
 import { ToastContainer, toast } from "react-toastify";
+import { SPECTRUM_STATUS_ENDPOINT } from "api/apiConfig";
 
 const AssignmentA: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -15,7 +16,7 @@ const AssignmentA: React.FC = () => {
     try {
       setLoading(true);
       axios
-        .get<SpectrumStatusResponses>("https://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumStatus")
+        .get<SpectrumStatusResponses>(SPECTRUM_STATUS_ENDPOINT)
         .then((res) => {
           if (data.length < 5) {
             setData((prev) => [...prev, { ...res?.data, time: new Date().toISOString() }]);

@@ -4,9 +4,12 @@ import { Container, Card, Button, Col, Row } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
 import SystemLogs from "../components/logs/SystemLogs";
 import Loader from "../components/loader/Loader";
+import { initialSpectrumLiveData } from "../utils/initialState";
+import { ToastContainer, toast } from "react-toastify";
+import { SPECTRUM_WS_ENDPOINT, ACT_ON_SPECTRUM_ENDPOINT } from "api/apiConfig";
+import { ActonSpectrumColumn } from "../components/table/tableColumns";
 
 const AssignmentB = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,20 +17,10 @@ const AssignmentB = () => {
   const [showSystemLogs, setShowSystemLogs] = useState(false);
   const [loading, setLoading] = useState(true);
   const [filteredIsActionRequired, setFilteredIsActionRequired] = useState([]);
-  const [spectrumLiveData, setSpectrumLiveData] = useState({
-    altitude: [],
-    temperature: [],
-    velocity: [],
-    statusMessage: [],
-    isActionRequired: [],
-    isAscending: [],
-    systemDetails: [],
-    currentData: {},
-  });
+  const [spectrumLiveData, setSpectrumLiveData] = useState(initialSpectrumLiveData);
 
   useEffect(() => {
-    const socketUrl = "wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS";
-    const socket = new WebSocket(socketUrl);
+    const socket = new WebSocket(SPECTRUM_WS_ENDPOINT);
 
     socket.onopen = () => {
       console.log("WebSocket connection opened");
@@ -62,6 +55,9 @@ const AssignmentB = () => {
 
     socket.onclose = (event) => {
       console.log("WebSocket connection closed:", event);
+      toast.info(`WebSocket connection closed`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     };
 
     return () => {
@@ -69,73 +65,34 @@ const AssignmentB = () => {
         socket.close();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAction = (row) => {
-    axios
-      .get("https://webfrontendassignment-isaraerospace.azurewebsites.net/api/ActOnSpectrum")
-      .then((res) => {
-        const actionTaken = filteredIsActionRequired
-          ?.filter((v) => v?.id !== row?.id)
-          .sort((a, b) => {
-            return new Date(a.timestamp) - new Date(b.timestamp);
+    try {
+      axios
+        .get(ACT_ON_SPECTRUM_ENDPOINT)
+        .then((res) => {
+          const actionTaken = filteredIsActionRequired
+            ?.filter((v) => v?.id !== row?.id)
+            .sort((a, b) => {
+              return new Date(a.timestamp) - new Date(b.timestamp);
+            });
+          setIsActionRequired(actionTaken);
+        })
+        .catch((err) => {
+          toast.error(`${err.message}`, {
+            position: toast.POSITION.TOP_CENTER,
           });
-        setIsActionRequired(actionTaken);
-      })
-      .catch((err) => {
-        //console.log(err)
+        });
+    } catch (err) {
+      toast.error(`${err.message}`, {
+        position: toast.POSITION.TOP_CENTER,
       });
+    }
   };
 
-  const columns = [
-    {
-      name: "Event Time",
-      selector: (row) => row.timestamp,
-      format: function (cell) {
-        return <div className="text-danger">{moment(cell.timestamp).format("D MMM YY, HH:mm:ss")}</div>;
-      },
-    },
-    {
-      name: "Is Ascending",
-      selector: (row) => row.IsAscending,
-      format: function (cell) {
-        return <div className="text-danger">{cell.IsAscending ? "True" : "False"}</div>;
-      },
-    },
-    {
-      name: "Status Message",
-      selector: (row) => row.StatusMessage,
-      format: function (cell) {
-        return (
-          <div className="text-danger" data-toggle="tooltip" title={cell.StatusMessage}>
-            {cell.StatusMessage}
-          </div>
-        );
-      },
-      wrap: true,
-    },
-    {
-      name: "Action Required",
-      selector: (row) => row.IsActionRequired,
-      format: function (cell) {
-        return <div className="text-danger">{cell.IsActionRequired ? "True" : "False"}</div>;
-      },
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <Button
-          variant="outline-danger"
-          size="sm"
-          onClick={() => {
-            handleAction(row);
-          }}
-        >
-          Action
-        </Button>
-      ),
-    },
-  ];
+  const tableColumns = ActonSpectrumColumn(handleAction);
 
   useEffect(() => {
     const filterActionMsgs = isActionRequired
@@ -192,13 +149,14 @@ const AssignmentB = () => {
                     Is Action Required Message: <strong>{spectrumLiveData?.currentData?.IsActionRequired ? "True" : "False"}</strong>
                   </div>
                 </Card.Text>
-                <DataTable columns={columns} data={filteredIsActionRequired} pagination paginationPerPage={3} paginationRowsPerPageOptions={[3, 10, 20, 40]} noDataComponent="There are no Actions required!" />
+                <DataTable columns={tableColumns} data={filteredIsActionRequired} pagination paginationPerPage={3} paginationRowsPerPageOptions={[3, 10, 20, 40]} noDataComponent="There are no Actions required!" />
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
       <SystemLogs show={showSystemLogs} setShow={setShowSystemLogs} data={spectrumLiveData?.systemDetails} />
+      <ToastContainer />
     </div>
   );
 };
