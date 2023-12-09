@@ -5,6 +5,7 @@ import Loader from "../components/loader/Loader";
 import { SpectrumDatas, SpectrumStatusResponses } from "types/types";
 import ChartCards from "components/cards/ChartCards";
 import StatusCard from "components/cards/StatusCard";
+import { ToastContainer, toast } from "react-toastify";
 
 const AssignmentA: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,10 +27,14 @@ const AssignmentA: React.FC = () => {
           }
         })
         .catch((err) => {
-          //  console.log(err);
+          toast.error(`${err.message}`, {
+            position: toast.POSITION.TOP_CENTER,
+          });
         });
-    } catch (error) {
-      //  console.error("Error fetching data:", error);
+    } catch (error: any) {
+      toast.error(`${error.message}`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } finally {
       setLoading(false);
     }
@@ -70,6 +75,7 @@ const AssignmentA: React.FC = () => {
           </Row>
         </Container>
       )}
+      <ToastContainer />
     </div>
   );
 };

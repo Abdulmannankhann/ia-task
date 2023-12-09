@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "react-bootstrap";
-import MuiLineChart from "components/liveCharts/LineChart";
+import MuiLineChart from "components/liveCharts/MuiLineChart";
 import { SpectrumDatas } from "types/types";
 
 interface ChartCardsProps {
@@ -17,7 +17,7 @@ const ChartCards: React.FC<ChartCardsProps> = ({ colors, data, chartType }) => {
         <Card.Subtitle className="mb-2 text-muted"></Card.Subtitle>
         <MuiLineChart colors={["#8884d8"]} data={data} chartType="altitude" />
         <div className="text-end m-2 mt-0 mb-0">
-          <strong style={{ fontSize: "25px" }}>•</strong> Recent 5 values
+          <strong style={{ fontSize: "25px" }}>•</strong> Recent {data.length} values
         </div>
       </Card.Body>
     </Card>
