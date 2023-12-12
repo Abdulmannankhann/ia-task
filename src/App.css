@@ -106,3 +106,9 @@ li:hover {
 .card-body:hover {
   box-shadow: var(--bs-box-shadow) !important;
 }
+
+@media (max-width: 992px) {
+  .custom-mt {
+    margin-top: 80px !important;
+  }
+}

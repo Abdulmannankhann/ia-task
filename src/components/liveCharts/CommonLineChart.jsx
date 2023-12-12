@@ -6,11 +6,11 @@ const CommonLineChart = ({ name = "", data = [], currentData = null, currentInde
   const getInitialVisiblePoints = () => {
     const screenWidth = window.innerWidth;
     if (screenWidth >= 1200) {
-      return 6; // Large screens
+      return 6;
     } else if (screenWidth >= 768) {
-      return 3; // Medium screens
+      return 3;
     } else {
-      return 3; // Small screens (e.g., mobile)
+      return 3;
     }
   };
   const [initialVisiblePoints, setInitialVisiblePoints] = useState(getInitialVisiblePoints());
@@ -26,30 +26,29 @@ const CommonLineChart = ({ name = "", data = [], currentData = null, currentInde
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  // Calculate domain for Y-axis
+
   const calculateYAxisDomain = () => {
     if (currentData !== null) {
       const minDomain = currentData - buffer;
       const maxDomain = currentData + buffer;
       return [minDomain, maxDomain];
     }
-    return undefined; // Use the default domain if currentData is not available
+    return undefined;
   };
 
-  // Dynamically calculate Y-axis ticks
   const calculateYAxisTicks = () => {
     if (currentData !== null) {
       const minTick = Math.floor((currentData - buffer) / steps) * steps;
       const maxTick = Math.ceil((currentData + buffer) / steps) * steps;
       return Array.from({ length: (maxTick - minTick) / steps + 1 }, (_, index) => minTick + index * steps);
     }
-    return undefined; // Use the default ticks if currentData is not available
+    return undefined;
   };
 
   return (
     <div>
       <div style={{ width: "85%", height: "30vh", margin: "20px" }}>
-        <h6 className="mt-lg-0 mt-md-0 mt-5">Real-time Spectrum {name}</h6>
+        <h6 className="custom-mt">Real-time Spectrum {name}</h6>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data?.slice(Math.max(0, currentIndex - initialVisiblePoints), currentIndex + 1)} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -107,7 +106,6 @@ const CommonLineChart = ({ name = "", data = [], currentData = null, currentInde
                 return null;
               }}
             />
-            {/*<Legend />*/}
             <Line type="monotone" dataKey="value" stroke="#8884d8" />
           </LineChart>
           {currentData && (
@@ -135,11 +133,6 @@ const CommonLineChart = ({ name = "", data = [], currentData = null, currentInde
             </div>
           )}
         </ResponsiveContainer>
-        {/*{currentData && (
-          <div className='d-flex justify-content-center'>
-            Current {name}: <strong>&nbsp;{currentData.toFixed(2)} {units}</strong>
-          </div>
-        )}*/}
       </div>
     </div>
   );

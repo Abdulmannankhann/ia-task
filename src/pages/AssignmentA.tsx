@@ -67,11 +67,11 @@ const AssignmentA: React.FC = () => {
       {data?.length === 0 && <Loader />}
       {data?.length > 0 && (
         <Container>
-          <Row className="mb-2">
-            <Col md={6} lg={4} className="mb-2">
+          <Row className="mb-4 mb-lg-2">
+            <Col md={6} lg={4} className="mb-4">
               <ChartCards colors={["#8884d8"]} data={sortedData} chartType="altitude" unit="km" />
             </Col>
-            <Col md={6} lg={4} className="mb-2">
+            <Col md={6} lg={4} className="mb-4">
               <ChartCards colors={["#8884d8"]} data={sortedData} chartType="velocity" unit="m/s" />
             </Col>
             <Col md={6} lg={4}>
