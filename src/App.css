@@ -109,6 +109,6 @@ li:hover {
 
 @media (max-width: 992px) {
   .custom-mt {
-    margin-top: 80px !important;
+    margin-top: 100px !important;
   }
 }

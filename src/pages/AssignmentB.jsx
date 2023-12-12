@@ -129,7 +129,7 @@ const AssignmentB = () => {
           </Col>
         </Row>
         <Row className="mb-4 mt-2">
-          <Col lg={12} md={12} sm={12} xs={12} style={{ marginTop: "80px", marginBottom: "10px" }}>
+          <Col lg={12} md={12} sm={12} xs={12} style={{ marginTop: "120px", marginBottom: "10px" }}>
             <Card>
               <Card.Header className="d-flex justify-content-between align-items-center">
                 Spectrum Details
